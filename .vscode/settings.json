@@ -1,4 +1,7 @@
-﻿{
+{
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
     "files.exclude":
     {
         "**/.DS_Store":true,
