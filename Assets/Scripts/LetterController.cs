@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class LetterController : MonoBehaviour
 {
   public Text text;
-
   public string letter = "Z";
 
   void Start()
