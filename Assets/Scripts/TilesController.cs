@@ -19,6 +19,9 @@ public class TilesController : MonoBehaviour
   private TileController GetController(GameObject tile) =>
     tile.GetComponentInChildren<TileController>();
 
+  private Transform GetConnection(GameObject tile) =>
+    GetController(tile).connection;
+
   private GameObject CreateTile(char letter)
   {
     var newTile = Instantiate(tile);
@@ -36,7 +39,7 @@ public class TilesController : MonoBehaviour
       var newTile = CreateTile(letter);
 
       newTile.transform.SetParent(lastTile
-        ? GetController(lastTile).connection
+        ? GetConnection(lastTile)
         : transform);
       newTile.transform.localPosition = Vector3.zero;
       newTile.transform.SetParent(transform);
@@ -64,7 +67,7 @@ public class TilesController : MonoBehaviour
         tileWithLetter.transform.SetParent(transform);
         tileWithLetter.SetActive(true);
 
-        parent = GetController(tileWithLetter).connection;
+        parent = GetConnection(tileWithLetter);
         isTileFound = true;
         break;
       }
@@ -79,7 +82,7 @@ public class TilesController : MonoBehaviour
 
         tilesWithLetter.Add(newTile);
         Debug.Log($"Added a tile for \'{letter}\'!");
-        parent = GetController(newTile).connection;
+        parent = GetConnection(newTile);
       }
     }
   }
