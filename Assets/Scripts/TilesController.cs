@@ -16,11 +16,14 @@ public class TilesController : MonoBehaviour
     return new List<char>(alphabet);
   }
 
-  private TileController GetController(GameObject tile) =>
-    tile.GetComponentInChildren<TileController>();
+  private TileController GetTileController(GameObject obj) =>
+    obj.GetComponentInChildren<TileController>();
 
-  private Transform GetConnection(GameObject tile) =>
-    GetController(tile).connection;
+  private Transform GetConnection(GameObject obj)
+  {
+    var controller = GetTileController(obj);
+    return controller ? controller.connection : obj.transform;
+  }
 
   private void AddTileToTilesByLetter(char letter, GameObject tile)
   {
@@ -34,7 +37,7 @@ public class TilesController : MonoBehaviour
   {
     var newTile = Instantiate(tile);
     newTile.name = letter.ToString();
-    var controller = GetController(newTile);
+    var controller = GetTileController(newTile);
     controller.letter = letter;
     AddTileToTilesByLetter(letter, newTile);
     return newTile;
@@ -48,20 +51,23 @@ public class TilesController : MonoBehaviour
     tile.gameObject.SetActive(shouldSetActive);
   }
 
+  private GameObject CreateAndPlaceTile(char letter, GameObject previousTile, bool shouldSetActive = true)
+  {
+    var tile = CreateTile(letter);
+    PlaceTile(tile.transform, GetConnection(previousTile), shouldSetActive);
+    return tile;
+  }
+
   private void CreateTiles()
   {
-    GameObject lastTile = null;
+    GameObject previousTile = gameObject;
     foreach (var letter in GetAlphabet())
-    {
-      var newTile = CreateTile(letter);
-      PlaceTile(newTile.transform, lastTile ? GetConnection(lastTile) : transform, false);
-      lastTile = newTile;
-    }
+      previousTile = CreateAndPlaceTile(letter, previousTile, false);
   }
 
   private void CreateWord(string word)
   {
-    var parent = transform;
+    var previousTile = gameObject;
     foreach (var letter in word.ToUpper())
     {
       var tilesWithLetter = tilesByLetter[letter];
@@ -70,17 +76,15 @@ public class TilesController : MonoBehaviour
       {
         if (tileWithLetter.activeInHierarchy) continue;
 
-        PlaceTile(tileWithLetter.transform, parent);
-        parent = GetConnection(tileWithLetter);
+        PlaceTile(tileWithLetter.transform, GetConnection(previousTile));
+        previousTile = tileWithLetter;
         isTileFound = true;
         break;
       }
       if (!isTileFound)
       {
         Debug.Log($"Adding a tile for \'{letter}\'!");
-        var newTile = CreateTile(letter);
-        PlaceTile(newTile.transform, parent);
-        parent = GetConnection(newTile);
+        previousTile = CreateAndPlaceTile(letter, previousTile);
       }
     }
   }
