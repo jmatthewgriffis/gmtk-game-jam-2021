@@ -35,6 +35,7 @@ public class TilesController : MonoBehaviour
         ? lastTile.GetComponentInChildren<TileController>().connection
         : transform);
       newTile.transform.localPosition = Vector3.zero;
+      newTile.transform.SetParent(transform);
       newTile.SetActive(false);
       tilesByLetter.Add(letter, new List<GameObject> { newTile });
       lastTile = newTile;
