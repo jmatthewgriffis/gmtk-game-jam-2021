@@ -5,6 +5,7 @@ public class LetterController : MonoBehaviour
 {
   public Text text;
   public string letter = "Z";
+  public Transform connection;
 
   void Start()
   {
