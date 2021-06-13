@@ -22,12 +22,21 @@ public class TilesController : MonoBehaviour
   private Transform GetConnection(GameObject tile) =>
     GetController(tile).connection;
 
+  private void AddTileToTilesByLetter(char letter, GameObject tile)
+  {
+    if (!tilesByLetter.ContainsKey(letter))
+      tilesByLetter.Add(letter, new List<GameObject>());
+
+    tilesByLetter[letter].Add(tile);
+  }
+
   private GameObject CreateTile(char letter)
   {
     var newTile = Instantiate(tile);
     newTile.name = letter.ToString();
     var controller = GetController(newTile);
     controller.letter = letter;
+    AddTileToTilesByLetter(letter, newTile);
     return newTile;
   }
 
@@ -46,7 +55,6 @@ public class TilesController : MonoBehaviour
     {
       var newTile = CreateTile(letter);
       PlaceTile(newTile.transform, lastTile ? GetConnection(lastTile) : transform, false);
-      tilesByLetter.Add(letter, new List<GameObject> { newTile });
       lastTile = newTile;
     }
   }
@@ -69,10 +77,9 @@ public class TilesController : MonoBehaviour
       }
       if (!isTileFound)
       {
+        Debug.Log($"Adding a tile for \'{letter}\'!");
         var newTile = CreateTile(letter);
         PlaceTile(newTile.transform, parent);
-        tilesWithLetter.Add(newTile);
-        Debug.Log($"Added a tile for \'{letter}\'!");
         parent = GetConnection(newTile);
       }
     }
