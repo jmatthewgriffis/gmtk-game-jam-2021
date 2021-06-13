@@ -3,13 +3,13 @@ using UnityEngine.UI;
 
 public class TileController : MonoBehaviour
 {
-  public string letter;
+  public char letter;
   public Text text;
   public Transform connection;
 
-  private void SetText(string val)
+  private void SetText(char val)
   {
-    text.text = val;
+    text.text = val.ToString();
   }
 
   void Start()

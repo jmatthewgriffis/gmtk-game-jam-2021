@@ -303,8 +303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea405e03e397144549d6dd337ef543f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  letter: 90
   text: {fileID: 3058173278611907454}
-  letter: Z
   connection: {fileID: 3058173278188213836}
 --- !u!1 &3058173279091305889
 GameObject:
