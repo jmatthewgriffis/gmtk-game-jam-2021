@@ -31,20 +31,21 @@ public class TilesController : MonoBehaviour
     return newTile;
   }
 
+  private void PlaceTile(Transform tile, Transform position, bool shouldSetActive = true)
+  {
+    tile.SetParent(position);
+    tile.localPosition = Vector3.zero;
+    tile.SetParent(transform);
+    tile.gameObject.SetActive(shouldSetActive);
+  }
+
   private void CreateTiles()
   {
     GameObject lastTile = null;
     foreach (var letter in GetAlphabet())
     {
       var newTile = CreateTile(letter);
-
-      newTile.transform.SetParent(lastTile
-        ? GetConnection(lastTile)
-        : transform);
-      newTile.transform.localPosition = Vector3.zero;
-      newTile.transform.SetParent(transform);
-      newTile.SetActive(false);
-
+      PlaceTile(newTile.transform, lastTile ? GetConnection(lastTile) : transform, false);
       tilesByLetter.Add(letter, new List<GameObject> { newTile });
       lastTile = newTile;
     }
@@ -61,12 +62,7 @@ public class TilesController : MonoBehaviour
       {
         if (tileWithLetter.activeInHierarchy) continue;
 
-        tileWithLetter.transform.SetParent(parent);
-        if (parent == transform) tileWithLetter.transform.position = Vector3.zero;
-        else tileWithLetter.transform.localPosition = Vector3.zero;
-        tileWithLetter.transform.SetParent(transform);
-        tileWithLetter.SetActive(true);
-
+        PlaceTile(tileWithLetter.transform, parent);
         parent = GetConnection(tileWithLetter);
         isTileFound = true;
         break;
@@ -74,12 +70,7 @@ public class TilesController : MonoBehaviour
       if (!isTileFound)
       {
         var newTile = CreateTile(letter);
-
-        newTile.transform.SetParent(parent);
-        newTile.transform.localPosition = Vector3.zero;
-        newTile.transform.SetParent(transform);
-        newTile.SetActive(true);
-
+        PlaceTile(newTile.transform, parent);
         tilesWithLetter.Add(newTile);
         Debug.Log($"Added a tile for \'{letter}\'!");
         parent = GetConnection(newTile);
