@@ -31,12 +31,14 @@ public class TilesController : MonoBehaviour
     foreach (var letter in GetAlphabet())
     {
       var newTile = CreateTile(letter);
+
       newTile.transform.SetParent(lastTile
         ? lastTile.GetComponentInChildren<TileController>().connection
         : transform);
       newTile.transform.localPosition = Vector3.zero;
       newTile.transform.SetParent(transform);
       newTile.SetActive(false);
+
       tilesByLetter.Add(letter, new List<GameObject> { newTile });
       lastTile = newTile;
     }
@@ -56,6 +58,7 @@ public class TilesController : MonoBehaviour
         tileWithLetter.transform.SetParent(parent);
         if (parent == transform) tileWithLetter.transform.position = Vector3.zero;
         else tileWithLetter.transform.localPosition = Vector3.zero;
+        tileWithLetter.transform.SetParent(transform);
         tileWithLetter.SetActive(true);
 
         parent = tileWithLetter.GetComponentInChildren<TileController>().connection;
@@ -65,10 +68,15 @@ public class TilesController : MonoBehaviour
       if (!isTileFound)
       {
         var newTile = CreateTile(letter);
+
         newTile.transform.SetParent(parent);
         newTile.transform.localPosition = Vector3.zero;
+        newTile.transform.SetParent(transform);
+        newTile.SetActive(true);
+
         tilesWithLetter.Add(newTile);
         Debug.Log($"Added a tile for \'{letter}\'!");
+        parent = newTile.GetComponentInChildren<TileController>().connection;
       }
     }
   }
