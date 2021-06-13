@@ -81,11 +81,10 @@ public class TilesController : MonoBehaviour
         isTileFound = true;
         break;
       }
-      if (!isTileFound)
-      {
-        Debug.Log($"Adding a tile for \'{letter}\'!");
-        previousTile = CreateAndPlaceTile(letter, previousTile);
-      }
+      if (isTileFound) continue;
+
+      Debug.Log($"Adding a tile for \'{letter}\'!");
+      previousTile = CreateAndPlaceTile(letter, previousTile);
     }
   }
 
