@@ -7,13 +7,13 @@ public class TilesController : MonoBehaviour
 
   public GameObject tile;
 
-  private List<char> GetAlphabet()
+  private string GetAlphabet()
   {
     char[] alphabet = {
       'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
       'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     };
-    return new List<char>(alphabet);
+    return new string(alphabet);
   }
 
   private TileController GetTileController(GameObject obj) =>
@@ -33,14 +33,24 @@ public class TilesController : MonoBehaviour
     tilesByLetter[letter].Add(tile);
   }
 
-  private GameObject CreateTile(char letter)
+  private GameObject FindUnusedTile(char letter) =>
+    tilesByLetter.ContainsKey(letter) ? tilesByLetter[letter].Find(tile => !tile.activeInHierarchy) : null;
+
+  private GameObject CreateTile(char letter, bool shouldLog = false)
   {
+    if (shouldLog) Debug.Log($"Adding a tile for \'{letter}\'!");
     var newTile = Instantiate(tile);
     newTile.name = letter.ToString();
     var controller = GetTileController(newTile);
     controller.letter = letter;
     AddTileToTilesByLetter(letter, newTile);
     return newTile;
+  }
+
+  private GameObject GetTile(char letter, bool shouldLog = false)
+  {
+    var tile = FindUnusedTile(letter);
+    return tile ? tile : CreateTile(letter, shouldLog);
   }
 
   private void PlaceTile(Transform tile, Transform position, bool shouldSetActive = true)
@@ -51,46 +61,32 @@ public class TilesController : MonoBehaviour
     tile.gameObject.SetActive(shouldSetActive);
   }
 
-  private GameObject CreateAndPlaceTile(char letter, GameObject previousTile, bool shouldSetActive = true)
+  private GameObject GetAndPlaceTile(
+    char letter,
+    GameObject previousTile,
+    bool shouldLog = false,
+    bool shouldSetActive = true
+  )
   {
-    var tile = CreateTile(letter);
+    var tile = GetTile(letter, shouldLog);
     PlaceTile(tile.transform, GetConnection(previousTile), shouldSetActive);
     return tile;
   }
 
-  private void CreateTiles()
-  {
-    GameObject previousTile = gameObject;
-    foreach (var letter in GetAlphabet())
-      previousTile = CreateAndPlaceTile(letter, previousTile, false);
-  }
-
-  private void CreateWord(string word)
+  private void AssembleTiles(
+    string letters,
+    bool shouldLog = false,
+    bool shouldSetActive = true
+  )
   {
     var previousTile = gameObject;
-    foreach (var letter in word.ToUpper())
-    {
-      var tilesWithLetter = tilesByLetter[letter];
-      var isTileFound = false;
-      foreach (var tileWithLetter in tilesWithLetter)
-      {
-        if (tileWithLetter.activeInHierarchy) continue;
-
-        PlaceTile(tileWithLetter.transform, GetConnection(previousTile));
-        previousTile = tileWithLetter;
-        isTileFound = true;
-        break;
-      }
-      if (isTileFound) continue;
-
-      Debug.Log($"Adding a tile for \'{letter}\'!");
-      previousTile = CreateAndPlaceTile(letter, previousTile);
-    }
+    foreach (var letter in letters.ToUpper())
+      previousTile = GetAndPlaceTile(letter, previousTile, shouldLog, shouldSetActive);
   }
 
   void Start()
   {
-    CreateTiles();
-    CreateWord("pizza");
+    AssembleTiles(GetAlphabet(), false, false);
+    AssembleTiles("pizza", true, true);
   }
 }
