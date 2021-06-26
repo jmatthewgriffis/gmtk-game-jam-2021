@@ -380,4 +380,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9bf27284be9b4096b650320119a6a4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: {fileID: 3058173279167119528, guid: ebb7d673a58e2485abdcbca9fb0bf1dc, type: 3}
+  tilePrefab: {fileID: 3058173279167119528, guid: ebb7d673a58e2485abdcbca9fb0bf1dc, type: 3}

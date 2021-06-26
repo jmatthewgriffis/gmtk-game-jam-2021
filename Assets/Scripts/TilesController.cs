@@ -5,7 +5,7 @@ public class TilesController : MonoBehaviour
 {
   private Dictionary<char, List<GameObject>> tilesByLetter = new Dictionary<char, List<GameObject>>();
 
-  public GameObject tile;
+  public GameObject tilePrefab;
 
   private string GetAlphabet()
   {
@@ -39,12 +39,12 @@ public class TilesController : MonoBehaviour
   private GameObject CreateTile(char letter, bool shouldLog = false)
   {
     if (shouldLog) Debug.Log($"Adding a tile for \'{letter}\'!");
-    var newTile = Instantiate(tile);
-    newTile.name = letter.ToString();
-    var controller = GetTileController(newTile);
+    var tile = Instantiate(tilePrefab);
+    tile.name = letter.ToString();
+    var controller = GetTileController(tile);
     controller.letter = letter;
-    AddTileToTilesByLetter(letter, newTile);
-    return newTile;
+    AddTileToTilesByLetter(letter, tile);
+    return tile;
   }
 
   private GameObject GetTile(char letter, bool shouldLog = false)
