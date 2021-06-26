@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class TilesController : MonoBehaviour
 {
-  private Dictionary<char, List<GameObject>> tilesByLetter = new Dictionary<char, List<GameObject>>();
+  private Dictionary<char, List<GameObject>> tilesByLetter =
+    new Dictionary<char, List<GameObject>>();
 
   public GameObject tilePrefab;
 
@@ -34,7 +35,9 @@ public class TilesController : MonoBehaviour
   }
 
   private GameObject FindUnusedTile(char letter) =>
-    tilesByLetter.ContainsKey(letter) ? tilesByLetter[letter].Find(tile => !tile.activeInHierarchy) : null;
+    tilesByLetter.ContainsKey(letter)
+      ? tilesByLetter[letter].Find(tile => !tile.activeInHierarchy)
+      : null;
 
   private GameObject CreateTile(char letter, bool shouldLog = false)
   {
@@ -53,7 +56,11 @@ public class TilesController : MonoBehaviour
     return tile ? tile : CreateTile(letter, shouldLog);
   }
 
-  private void PlaceTile(Transform tile, Transform position, bool shouldSetActive = true)
+  private void PlaceTile(
+    Transform tile,
+    Transform position,
+    bool shouldSetActive = true
+  )
   {
     tile.SetParent(position);
     tile.localPosition = Vector3.zero;
@@ -80,8 +87,12 @@ public class TilesController : MonoBehaviour
   )
   {
     var previousTile = gameObject;
-    foreach (var letter in letters.ToUpper())
-      previousTile = GetAndPlaceTile(letter, previousTile, shouldLog, shouldSetActive);
+    foreach (var letter in letters.ToUpper()) previousTile = GetAndPlaceTile(
+      letter,
+      previousTile,
+      shouldLog,
+      shouldSetActive
+    );
   }
 
   void Start()
