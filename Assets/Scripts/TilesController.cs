@@ -109,6 +109,6 @@ public class TilesController : MonoBehaviour
   void Awake()
   {
     AssembleTiles(GetAlphabet(), gameObject, false, false);
-    AssembleTiles("pizza", null);
+    // AssembleTiles("pizza", null);
   }
 }
