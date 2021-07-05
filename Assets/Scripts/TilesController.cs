@@ -18,10 +18,12 @@ public class TilesController : MonoBehaviour
   }
 
   private TileController GetTileController(GameObject obj) =>
-    obj.GetComponentInChildren<TileController>();
+    obj ? obj.GetComponentInChildren<TileController>() : null;
 
   private Transform GetConnection(GameObject obj)
   {
+    if (!obj) return null;
+
     var controller = GetTileController(obj);
     return controller ? controller.connection : obj.transform;
   }
@@ -58,13 +60,18 @@ public class TilesController : MonoBehaviour
 
   private void PlaceTile(
     Transform tile,
-    Transform position,
+    GameObject previousTile,
     bool shouldSetActive = true
   )
   {
+    var position = GetConnection(previousTile);
     tile.SetParent(position);
     tile.localPosition = Vector3.zero;
-    tile.SetParent(transform);
+
+    var previousTileController = GetTileController(previousTile);
+    if (previousTileController)
+      tile.SetParent(previousTileController.GetParent());
+
     tile.gameObject.SetActive(shouldSetActive);
   }
 
@@ -76,17 +83,18 @@ public class TilesController : MonoBehaviour
   )
   {
     var tile = GetTile(letter, shouldLog);
-    PlaceTile(tile.transform, GetConnection(previousTile), shouldSetActive);
+    PlaceTile(tile.transform, previousTile, shouldSetActive);
     return tile;
   }
 
   private void AssembleTiles(
     string letters,
+    GameObject container,
     bool shouldLog = false,
     bool shouldSetActive = true
   )
   {
-    var previousTile = gameObject;
+    var previousTile = container;
     foreach (var letter in letters.ToUpper()) previousTile = GetAndPlaceTile(
       letter,
       previousTile,
@@ -95,9 +103,12 @@ public class TilesController : MonoBehaviour
     );
   }
 
-  void Start()
+  public void AssembleTiles(string letters, GameObject container) =>
+    AssembleTiles(letters, container, true, true);
+
+  void Awake()
   {
-    AssembleTiles(GetAlphabet(), false, false);
-    AssembleTiles("pizza", true, true);
+    AssembleTiles(GetAlphabet(), gameObject, false, false);
+    AssembleTiles("pizza", null);
   }
 }

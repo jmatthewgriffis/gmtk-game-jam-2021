@@ -12,6 +12,8 @@ public class TileController : MonoBehaviour
     text.text = val.ToString();
   }
 
+  public Transform GetParent() => transform.parent.parent;
+
   void Start()
   {
     SetText(letter);
